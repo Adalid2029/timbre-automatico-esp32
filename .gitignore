@@ -1,0 +1,23 @@
+# Arduino IDE
+*.fqbn
+*.bak
+*~
+
+# Build artifacts
+build/
+*.bin
+*.elf
+*.hex
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
