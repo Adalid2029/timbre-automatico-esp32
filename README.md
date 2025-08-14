@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🔔 Timbre Automático ESP32 - Guía Completa de Instalación
 
 Sistema de timbre automático con ESP32, pantalla OLED, interfaz web y horarios programables.
@@ -452,3 +453,7 @@ $SIZE = "0x1E0000"
 & $MK -c .\data -b 4096 -p 256 -s $SIZE .\littlefs.bin
 & "C:\Users\stack\AppData\Local\Arduino15\packages\esp32\tools\esptool_py\5.0.0\esptool.exe" --chip esp32 --port COM4 --baud 921600 write_flash $OFFSET .\littlefs.bin
 
+=======
+# timbre-automatico-esp32
+Sistema de timbre automático para escuelas con ESP32, interfaz web y horarios programables
+>>>>>>> e620935f9635bc8e87558ac5fb14c3de8613ba23
