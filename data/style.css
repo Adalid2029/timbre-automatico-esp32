@@ -560,3 +560,59 @@ input:checked + .slider:before {
 .loading {
     animation: pulse 2s infinite;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Estilos para los controles del tipo */
+.tipo-controles {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.datetime-inputs {
+    display: flex;
+    gap: 15px;
+    align-items: end;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.date-group,
+.time-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.date-group label,
+.time-group label {
+    font-weight: bold;
+    color: #333;
+}
+
+.config-hora-container {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    border: 2px solid #ff8a65;
+}

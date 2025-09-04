@@ -446,9 +446,9 @@ Para soporte técnico o mejoras:
 **✅ ¡Sistema de Timbre Automático listo para usar!** 🔔
 
 Remove-Item "littlefs.bin" -ErrorAction SilentlyContinue
-$MK = "C:\Users\stack\AppData\Local\Arduino15\packages\esp32\tools\mklittlefs\3.0.0-gnu12-dc7f933\mklittlefs.exe"
+$MK = "C:\Users\Windows\AppData\Local\Arduino15\packages\esp32\tools\mklittlefs\3.0.0-gnu12-dc7f933\mklittlefs.exe"
 $OFFSET = "0x210000"
 $SIZE = "0x1E0000"
 & $MK -c .\data -b 4096 -p 256 -s $SIZE .\littlefs.bin
-& "C:\Users\stack\AppData\Local\Arduino15\packages\esp32\tools\esptool_py\5.0.0\esptool.exe" --chip esp32 --port COM4 --baud 921600 write_flash $OFFSET .\littlefs.bin
+& "C:\Users\Windows\AppData\Local\Arduino15\packages\esp32\tools\esptool_py\5.0.0\esptool.exe" --chip esp32 --port COM4 --baud 921600 write_flash $OFFSET .\littlefs.bin
 

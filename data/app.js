@@ -5,17 +5,17 @@ let tiposHorarios = [];
 const diasNombres = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
 // Inicialización
-window.onload = function() {
+window.onload = function () {
     console.log('🚀 Aplicación iniciada');
     actualizarHora();
     cargarEstado();
-    
+
     // Actualizar hora cada segundo
     setInterval(actualizarHora, 1000);
-    
+
     // Cargar estado cada 5 segundos
     setInterval(cargarEstado, 5000);
-    
+
     // Cargar logs cada 2 segundos
     setInterval(cargarLogs, 2000);
 };
@@ -25,7 +25,7 @@ async function actualizarHora() {
     try {
         const response = await fetch('/api/hora');
         const data = await response.json();
-        document.getElementById('horaActual').innerHTML = 
+        document.getElementById('horaActual').innerHTML =
             `📅 ${data.fecha} ⏰ ${data.hora}`;
     } catch (error) {
         console.error('❌ Error al obtener hora:', error);
@@ -35,14 +35,26 @@ async function actualizarHora() {
 
 // Función para cargar el estado del sistema
 async function cargarEstado() {
+    // NO actualizar si hay un input de tiempo activo
+    const inputsActivos = document.querySelectorAll('input[type="time"]:focus, input[type="text"]:focus');
+    if (inputsActivos.length > 0) {
+        console.log('⏸️ Saltando actualización - usuario interactuando con inputs');
+        return;
+    }
+
+    // NO actualizar si hay un time picker abierto (algunos navegadores)
+    if (document.querySelector('input[type="time"]:focus')) {
+        return;
+    }
+
     try {
         const response = await fetch('/api/estado');
         const data = await response.json();
-        
+
         sistemaActivo = data.sistemaActivo;
         estadoDias = data.dias;
         tiposHorarios = data.tipos;
-        
+
         actualizarInterfaz();
     } catch (error) {
         console.error('❌ Error al cargar estado:', error);
@@ -54,10 +66,10 @@ async function cargarLogs() {
     try {
         const response = await fetch('/api/logs');
         const data = await response.json();
-        
+
         if (data.ultimoLog) {
             const timestamp = new Date(data.timestamp).toLocaleTimeString();
-            document.getElementById('logDisplay').innerHTML = 
+            document.getElementById('logDisplay').innerHTML =
                 `[${timestamp}] ${data.ultimoLog}`;
         }
     } catch (error) {
@@ -70,7 +82,7 @@ function actualizarInterfaz() {
     // Actualizar estado del sistema
     const estadoEl = document.getElementById('estadoSistema');
     const btnToggle = document.getElementById('btnToggle');
-    
+
     if (sistemaActivo) {
         estadoEl.textContent = '✅ Sistema Activo - Funcionando Correctamente';
         estadoEl.className = 'estado-sistema sistema-activo';
@@ -82,10 +94,10 @@ function actualizarInterfaz() {
         btnToggle.innerHTML = '✅ ACTIVAR SISTEMA';
         btnToggle.className = 'btn btn-success';
     }
-    
+
     // Actualizar días
     actualizarDias();
-    
+
     // Actualizar tipos de horarios
     actualizarTiposHorarios();
 }
@@ -94,7 +106,7 @@ function actualizarInterfaz() {
 function actualizarDias() {
     const container = document.getElementById('diasSemana');
     container.innerHTML = '';
-    
+
     for (let i = 0; i < 7; i++) {
         const div = document.createElement('div');
         div.className = `dia-checkbox ${estadoDias[i] ? 'dia-activo' : ''}`;
@@ -111,7 +123,7 @@ function actualizarDias() {
 function actualizarTiposHorarios() {
     const container = document.getElementById('tiposHorarios');
     container.innerHTML = '';
-    
+
     if (tiposHorarios.length === 0) {
         container.innerHTML = `
             <div style="text-align: center; padding: 40px; color: #666;">
@@ -121,18 +133,23 @@ function actualizarTiposHorarios() {
         `;
         return;
     }
-    
+
     tiposHorarios.forEach((tipo, index) => {
         const div = document.createElement('div');
         div.className = 'tipo-horario';
         div.innerHTML = `
             <div class="tipo-header">
                 <span class="tipo-nombre">📋 ${tipo.nombre}</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" ${tipo.activo ? 'checked' : ''} 
-                           onchange="toggleTipo(${index})">
-                    <span class="slider"></span>
-                </label>
+                <div class="tipo-controles">
+                    <button class="btn btn-danger btn-small" onclick="eliminarTipo(${index})" title="Eliminar tipo completo">
+                        🗑️
+                    </button>
+                    <label class="toggle-switch">
+                        <input type="checkbox" ${tipo.activo ? 'checked' : ''} 
+                            onchange="toggleTipo(${index})">
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
             
             <div class="form-group">
@@ -146,9 +163,9 @@ function actualizarTiposHorarios() {
             </div>
             
             <div class="horarios-lista">
-                ${tipo.horarios.length === 0 ? 
-                    '<p style="grid-column: 1/-1; text-align: center; color: #666; font-style: italic;">No hay horarios configurados</p>' :
-                    tipo.horarios.map((horario, hIndex) => `
+                ${tipo.horarios.length === 0 ?
+                '<p style="grid-column: 1/-1; text-align: center; color: #666; font-style: italic;">No hay horarios configurados</p>' :
+                tipo.horarios.map((horario, hIndex) => `
                         <div class="horario-item">
                             <span>⏰ ${horario}</span>
                             <button class="btn btn-danger btn-small" onclick="eliminarHorario(${index}, ${hIndex})" title="Eliminar horario">
@@ -156,7 +173,7 @@ function actualizarTiposHorarios() {
                             </button>
                         </div>
                     `).join('')
-                }
+            }
             </div>
         `;
         container.appendChild(div);
@@ -169,17 +186,17 @@ async function sonarManual() {
         const btn = event.target;
         btn.disabled = true;
         btn.innerHTML = '🔔 SONANDO...';
-        
+
         await fetch('/api/sonar', { method: 'POST' });
-        
+
         // Mostrar confirmación
         mostrarNotificacion('🔔 Timbre activado manualmente', 'success');
-        
+
         setTimeout(() => {
             btn.disabled = false;
             btn.innerHTML = '🔔 SONAR TIMBRE';
         }, 3000);
-        
+
     } catch (error) {
         console.error('❌ Error al sonar timbre:', error);
         mostrarNotificacion('❌ Error al activar el timbre', 'error');
@@ -194,12 +211,12 @@ async function toggleSistema() {
         const response = await fetch('/api/toggle', { method: 'POST' });
         const data = await response.json();
         sistemaActivo = data.sistemaActivo;
-        
+
         mostrarNotificacion(
-            sistemaActivo ? '✅ Sistema activado' : '⚠️ Sistema desactivado', 
+            sistemaActivo ? '✅ Sistema activado' : '⚠️ Sistema desactivado',
             sistemaActivo ? 'success' : 'warning'
         );
-        
+
         actualizarInterfaz();
     } catch (error) {
         console.error('❌ Error al cambiar estado del sistema:', error);
@@ -214,7 +231,7 @@ async function crearTipoHorario() {
         mostrarNotificacion('⚠️ Por favor ingresa un nombre para el tipo de horario', 'warning');
         return;
     }
-    
+
     try {
         await fetch('/api/configurar', {
             method: 'POST',
@@ -224,7 +241,7 @@ async function crearTipoHorario() {
                 nombre: nombre
             })
         });
-        
+
         document.getElementById('nuevoTipo').value = '';
         mostrarNotificacion(`✅ Tipo "${nombre}" creado correctamente`, 'success');
         cargarEstado();
@@ -238,12 +255,12 @@ async function crearTipoHorario() {
 async function agregarHorario(tipoIndex) {
     const input = document.getElementById(`horario${tipoIndex}`);
     const horario = input.value;
-    
+
     if (!horario) {
         mostrarNotificacion('⚠️ Por favor selecciona una hora', 'warning');
         return;
     }
-    
+
     try {
         await fetch('/api/configurar', {
             method: 'POST',
@@ -254,7 +271,7 @@ async function agregarHorario(tipoIndex) {
                 horario: horario
             })
         });
-        
+
         input.value = '';
         mostrarNotificacion(`✅ Horario ${horario} agregado correctamente`, 'success');
         cargarEstado();
@@ -267,7 +284,7 @@ async function agregarHorario(tipoIndex) {
 // Función para eliminar horario
 async function eliminarHorario(tipoIndex, horarioIndex) {
     if (!confirm('🗑️ ¿Estás seguro de eliminar este horario?')) return;
-    
+
     try {
         await fetch('/api/configurar', {
             method: 'POST',
@@ -278,7 +295,7 @@ async function eliminarHorario(tipoIndex, horarioIndex) {
                 horarioIndex: horarioIndex
             })
         });
-        
+
         mostrarNotificacion('🗑️ Horario eliminado correctamente', 'success');
         cargarEstado();
     } catch (error) {
@@ -298,11 +315,35 @@ async function toggleTipo(tipoIndex) {
                 tipoIndex: tipoIndex
             })
         });
-        
+
         cargarEstado();
     } catch (error) {
         console.error('❌ Error al cambiar estado del tipo:', error);
         mostrarNotificacion('❌ Error al cambiar estado del tipo', 'error');
+    }
+}
+
+// Función para eliminar tipo de horario
+async function eliminarTipo(tipoIndex) {
+    const nombreTipo = tiposHorarios[tipoIndex].nombre;
+
+    if (!confirm(`🗑️ ¿Estás seguro de eliminar completamente el tipo "${nombreTipo}" y todos sus horarios?`)) return;
+
+    try {
+        await fetch('/api/configurar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                accion: 'eliminar_tipo',
+                tipoIndex: tipoIndex
+            })
+        });
+
+        mostrarNotificacion(`🗑️ Tipo "${nombreTipo}" eliminado correctamente`, 'success');
+        cargarEstado();
+    } catch (error) {
+        console.error('❌ Error al eliminar tipo:', error);
+        mostrarNotificacion('❌ Error al eliminar tipo', 'error');
     }
 }
 
@@ -316,7 +357,7 @@ async function guardarDias() {
                 dias: estadoDias
             })
         });
-        
+
         mostrarNotificacion('💾 Configuración de días guardada correctamente', 'success');
     } catch (error) {
         console.error('❌ Error al guardar días:', error);
@@ -335,7 +376,7 @@ function mostrarNotificacion(mensaje, tipo = 'info') {
             <button onclick="this.parentElement.parentElement.remove()" class="notificacion-close">×</button>
         </div>
     `;
-    
+
     // Agregar estilos si no existen
     if (!document.getElementById('notificacion-styles')) {
         const styles = document.createElement('style');
@@ -411,10 +452,10 @@ function mostrarNotificacion(mensaje, tipo = 'info') {
         `;
         document.head.appendChild(styles);
     }
-    
+
     // Agregar al DOM
     document.body.appendChild(notificacion);
-    
+
     // Auto-eliminar después de 5 segundos
     setTimeout(() => {
         if (notificacion.parentElement) {
@@ -423,13 +464,53 @@ function mostrarNotificacion(mensaje, tipo = 'info') {
     }, 5000);
 }
 
+function configurarHora() {
+    const fecha = document.getElementById('fechaInput').value;
+    const hora = document.getElementById('horaInput').value;
+
+    if (!fecha || !hora) {
+        alert('Por favor complete fecha y hora');
+        return;
+    }
+
+    const [año, mes, dia] = fecha.split('-').map(Number);
+    const [horas, minutos, segundos = 0] = hora.split(':').map(Number);
+
+    const data = {
+        año: año,
+        mes: mes,
+        dia: dia,
+        hora: horas,
+        minuto: minutos,
+        segundo: segundos
+    };
+
+    fetch('/api/configurar-hora', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                alert('Hora configurada correctamente');
+                actualizarHora(); // Actualizar display
+            } else {
+                alert('Error al configurar hora');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error de comunicación');
+        });
+}
 // Manejar errores globales
-window.addEventListener('error', function(event) {
+window.addEventListener('error', function (event) {
     console.error('❌ Error global:', event.error);
 });
 
 // Manejar promesas rechazadas
-window.addEventListener('unhandledrejection', function(event) {
+window.addEventListener('unhandledrejection', function (event) {
     console.error('❌ Promesa rechazada:', event.reason);
 });
 
