@@ -264,7 +264,8 @@ body {
     margin-bottom: 8px;
     font-weight: 600;
     color: var(--bs-dark);
-    font-size: 0.875rem;
+    /* font-size: 0.875rem; */
+    font-size: 1.3rem;
 }
 
 .input-group {
@@ -615,4 +616,18 @@ input:checked + .slider:before {
     border-radius: 15px;
     margin-bottom: 20px;
     border: 2px solid #ff8a65;
+}
+
+.btn-emergency {
+  background: linear-gradient(45deg, #ff4444, #cc0000);
+  color: white;
+  border: 3px solid #ffffff;
+  animation: parpadeo 0.5s infinite alternate;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+@keyframes parpadeo {
+  0% { opacity: 1; }
+  100% { opacity: 0.7; }
 }

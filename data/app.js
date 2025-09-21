@@ -187,24 +187,48 @@ async function sonarManual() {
         btn.disabled = true;
         btn.innerHTML = '🔔 SONANDO...';
 
+        // MOSTRAR BOTÓN DE EMERGENCIA
+        document.getElementById('btnEmergencia').style.display = 'inline-block';
+
         await fetch('/api/sonar', { method: 'POST' });
 
-        // Mostrar confirmación
         mostrarNotificacion('🔔 Timbre activado manualmente', 'success');
 
         setTimeout(() => {
             btn.disabled = false;
             btn.innerHTML = '🔔 SONAR TIMBRE';
-        }, 3000);
+            // OCULTAR BOTÓN DE EMERGENCIA después de 10 segundos
+            document.getElementById('btnEmergencia').style.display = 'none';
+        }, 10000); // Cambiado a 10 segundos para coincidir con el Arduino
 
     } catch (error) {
         console.error('❌ Error al sonar timbre:', error);
         mostrarNotificacion('❌ Error al activar el timbre', 'error');
         event.target.disabled = false;
         event.target.innerHTML = '🔔 SONAR TIMBRE';
+        document.getElementById('btnEmergencia').style.display = 'none';
     }
 }
 
+async function detenerTimbre() {
+    try {
+        await fetch('/api/detener', { method: 'POST' });
+
+        // Ocultar botón de emergencia inmediatamente
+        document.getElementById('btnEmergencia').style.display = 'none';
+
+        // Reactivar botón de sonar
+        const btnSonar = document.querySelector('button[onclick="sonarManual()"]');
+        btnSonar.disabled = false;
+        btnSonar.innerHTML = '🔔 SONAR TIMBRE';
+
+        mostrarNotificacion('🚨 Timbre detenido por emergencia', 'warning');
+
+    } catch (error) {
+        console.error('❌ Error al detener timbre:', error);
+        mostrarNotificacion('❌ Error al detener el timbre', 'error');
+    }
+}
 // Función para toggle del sistema
 async function toggleSistema() {
     try {

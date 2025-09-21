@@ -1,92 +1,89 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Timbre Automático 23 de Marzo</title>
-    <link rel="stylesheet" href="/style.css" />
-  </head>
 
-  <body>
-    <div class="container">
-      <div class="header">
-        <h1>🔔 Timbre Automático</h1>
-        <h2>23 de Marzo</h2>
-        <div class="hora-actual" id="horaActual">Cargando...</div>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timbre Automático 23 de Marzo</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
 
-      <div class="config-hora-container">
-        <h3>⏰ Configurar Fecha y Hora</h3>
-        <div class="datetime-inputs">
-          <div class="date-group">
-            <label>Fecha:</label>
-            <input type="date" id="fechaInput" />
-          </div>
-          <div class="time-group">
-            <label>Hora:</label>
-            <input type="time" id="horaInput" step="1" />
-          </div>
-          <button class="btn btn-warning" onclick="configurarHora()">
-            🕐 CONFIGURAR HORA
-          </button>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🔔 Timbre Automático</h1>
+      <h2>23 de Marzo</h2>
+      <div class="hora-actual" id="horaActual">Cargando...</div>
+    </div>
+
+    <div class="config-hora-container">
+      <h3>⏰ Configurar Fecha y Hora</h3>
+      <div class="datetime-inputs">
+        <div class="date-group">
+          <label>Fecha:</label>
+          <input type="date" id="fechaInput" />
         </div>
-      </div>
-
-      <div class="content">
-        <div class="estado-sistema" id="estadoSistema">Sistema Activo ✓</div>
-
-        <div class="logs-container">
-          <h3>📋 Último Log</h3>
-          <div class="log-display" id="logDisplay">Esperando logs...</div>
+        <div class="time-group">
+          <label>Hora:</label>
+          <input type="time" id="horaInput" step="1" />
         </div>
-
-        <div class="controles-principales">
-          <button class="btn btn-primary" onclick="sonarManual()">
-            🔔 SONAR TIMBRE
-          </button>
-          <button
-            class="btn btn-danger"
-            onclick="toggleSistema()"
-            id="btnToggle"
-          >
-            ❌ DESACTIVAR SISTEMA
-          </button>
-        </div>
-
-        <div class="seccion">
-          <h2>📅 DÍAS DE LA SEMANA</h2>
-          <div class="dias-semana" id="diasSemana">
-            <!-- Se llenan con JavaScript -->
-          </div>
-          <button class="btn btn-success" onclick="guardarDias()">
-            💾 GUARDAR DÍAS
-          </button>
-        </div>
-
-        <div class="seccion">
-          <h2>⏰ TIPOS DE HORARIOS</h2>
-
-          <div class="form-group">
-            <label>Crear Nuevo Tipo de Horario:</label>
-            <div class="input-group">
-              <input
-                type="text"
-                id="nuevoTipo"
-                placeholder="Ej: Recreos, Clases, Entrada, Salida..."
-              />
-              <button class="btn btn-primary" onclick="crearTipoHorario()">
-                ➕ CREAR
-              </button>
-            </div>
-          </div>
-
-          <div class="tipos-horarios" id="tiposHorarios">
-            <!-- Se llenan con JavaScript -->
-          </div>
-        </div>
+        <button class="btn btn-warning" onclick="configurarHora()">
+          🕐 CONFIGURAR HORA
+        </button>
       </div>
     </div>
 
-    <script src="/app.js"></script>
-  </body>
+    <div class="content">
+      <div class="estado-sistema" id="estadoSistema">Sistema Activo ✓</div>
+
+      <div class="logs-container">
+        <h3>📋 Último Log</h3>
+        <div class="log-display" id="logDisplay">Esperando logs...</div>
+      </div>
+
+      <div class="controles-principales">
+        <button class="btn btn-primary" onclick="sonarManual()">
+          🔔 SONAR TIMBRE
+        </button>
+        <button class="btn btn-danger" onclick="toggleSistema()" id="btnToggle">
+          ❌ DESACTIVAR SISTEMA
+        </button>
+        <button class="btn btn-emergency" id="btnEmergencia" onclick="detenerTimbre()" style="display: none;">
+          🚨 DETENER TIMBRE
+        </button>
+      </div>
+
+      <div class="seccion">
+        <h2>📅 DÍAS DE LA SEMANA</h2>
+        <div class="dias-semana" id="diasSemana">
+          <!-- Se llenan con JavaScript -->
+        </div>
+        <button class="btn btn-success" onclick="guardarDias()">
+          💾 GUARDAR DÍAS
+        </button>
+      </div>
+
+      <div class="seccion">
+        <h2>⏰ TIPOS DE HORARIOS</h2>
+
+        <div class="form-group">
+          <label>Crear Nuevo Tipo de Horario:</label>
+          <div class="input-group">
+            <input type="text" id="nuevoTipo" placeholder="Ej: Recreos, Clases, Entrada, Salida..." />
+            <button class="btn btn-primary" onclick="crearTipoHorario()">
+              ➕ CREAR
+            </button>
+          </div>
+        </div>
+
+        <div class="tipos-horarios" id="tiposHorarios">
+          <!-- Se llenan con JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+
 </html>
